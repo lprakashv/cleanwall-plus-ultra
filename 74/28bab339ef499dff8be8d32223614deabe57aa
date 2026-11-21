@@ -1,0 +1,95 @@
+app/src/main/java/dev/lprakashv/cleanwall/MainActivity.kt
+  s_8e754f0cdc1ba2::t_2f0efc571c08b2 250-251,260,264-265,1136-1141,1623,1628
+  s_8e754f0cdc1ba2::t_94b28f4006cd49 1640
+  s_8e754f0cdc1ba2::t_de5cd1c3d69c84 100,227,1582-1585,1587,1589-1594,1596,1598-1608,1610,1612,1621-1622,1624-1627,1629-1634,1636,1638
+  s_8e754f0cdc1ba2::t_66ab905a2ace68 1715,1719,1721-1725
+  s_8e754f0cdc1ba2::t_dd80651c654239 249,253-258,266,1619,1714,1728,1740
+  s_3784247ee2b58b::t_f038aaf4c8cb4c 217-221
+  s_8e754f0cdc1ba2::t_86b7218e4cc5a2 259,261-263,583,1456,1472,1502,1618
+  s_8e754f0cdc1ba2::t_2c4e8af9b766eb 577,587,1492,1509,1514,1520,1581,1586,1588,1595,1597,1609,1611,1613-1617,1635,1637
+  s_8e754f0cdc1ba2::t_b380f674315dd7 252
+  s_8e754f0cdc1ba2::t_88619724aad1c1 1620
+app/src/main/java/dev/lprakashv/cleanwall/PublicWallpapers.kt
+  s_8e754f0cdc1ba2::t_8b31ee54e03e59 89
+  s_8e754f0cdc1ba2::t_631361de2de368 21
+  s_8e754f0cdc1ba2::t_94b28f4006cd49 84,116
+  s_258401ccdc78f2::t_adac785ecbb0a0 33,53-55,70-71,82
+  s_8e754f0cdc1ba2::t_05c217657a4fbe 124,151
+  s_8e754f0cdc1ba2::t_12e2f61c047bed 152-154
+README.md
+  s_8e754f0cdc1ba2::t_0412122225dab8 136
+  s_8e754f0cdc1ba2::t_32318a501aa950 104,132-134,140,241,243
+  s_3784247ee2b58b::t_f038aaf4c8cb4c 103
+  s_258401ccdc78f2::t_adac785ecbb0a0 10,27,100
+app/src/test/java/dev/lprakashv/cleanwall/WallpaperCacheTest.kt
+  s_8e754f0cdc1ba2::t_452b974ddccc94 15
+  s_8e754f0cdc1ba2::t_32318a501aa950 5,29-38,43,45-49
+  s_8e754f0cdc1ba2::t_fce5d4b9272e27 39-42,44,50
+app/src/test/java/dev/lprakashv/cleanwall/OnlineWallpapersTest.kt
+  s_8e754f0cdc1ba2::t_ea06f392625807 1-2,4-8,25-26,28-33
+  s_8e754f0cdc1ba2::t_6274af6d02c963 3,9-14
+  s_8e754f0cdc1ba2::t_7f62e54bccf251 15-24
+  s_8e754f0cdc1ba2::t_452b974ddccc94 27
+app/src/main/java/dev/lprakashv/cleanwall/OnlineWallpapers.kt
+  s_8e754f0cdc1ba2::t_8b31ee54e03e59 5,34,128
+  s_8e754f0cdc1ba2::t_6274af6d02c963 26,147-154
+  s_8e754f0cdc1ba2::t_7f62e54bccf251 163-168
+  s_8e754f0cdc1ba2::t_cc21403015f963 7
+  s_8e754f0cdc1ba2::t_34130aae20b7af 91,99-117
+  s_8e754f0cdc1ba2::t_66c85b058539e4 76,87-88
+  s_8e754f0cdc1ba2::t_853ada9d53bd2c 1-4,6,8-16,18-20,22-25,27-33,62-64,82-83,89,92-98,119-127,129-146,169-175
+  s_8e754f0cdc1ba2::t_3ab4c27eb2c2e6 17,21,35-61,65-75,77-81,84-86,90,118,155-162
+app/src/main/java/dev/lprakashv/cleanwall/HomeSheet.kt
+  s_8e754f0cdc1ba2::t_dd80651c654239 22-25,29-30,38,56,81,83,89,139,163
+  s_8e754f0cdc1ba2::t_2f0efc571c08b2 27,51-52
+  s_8e754f0cdc1ba2::t_2c4e8af9b766eb 26,78,88
+  s_8e754f0cdc1ba2::t_86b7218e4cc5a2 28,64,75,157-158
+  s_8e754f0cdc1ba2::t_c057808f467034 159-160
+app/src/main/java/dev/lprakashv/cleanwall/HomeWallpaper.kt
+  s_8e754f0cdc1ba2::t_05c217657a4fbe 62,162
+  s_8e754f0cdc1ba2::t_e4dc9f78c2bb14 45,74,76,80-81,83-85,88,90,168,196-198,200,215,237,240
+  s_8e754f0cdc1ba2::t_de5cd1c3d69c84 78-79,86-87
+  s_8e754f0cdc1ba2::t_d457f7d27260f2 77,82,89,91-96,199,201-203
+  s_8e754f0cdc1ba2::t_6274af6d02c963 75
+  s_8e754f0cdc1ba2::t_8b31ee54e03e59 264
+  s_8e754f0cdc1ba2::t_84352826679f59 207
+CONTRIBUTING.md
+  s_258401ccdc78f2::t_adac785ecbb0a0 9,14,26
+app/src/main/res/values/strings.xml
+  s_8e754f0cdc1ba2::t_66ab905a2ace68 135
+  s_8e754f0cdc1ba2::t_631361de2de368 136-140
+  s_8e754f0cdc1ba2::t_de5cd1c3d69c84 141-145
+  s_8e754f0cdc1ba2::t_dd80651c654239 146
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7428bab339ef499dff8be8d32223614deabe57aa",
+  "prompts": {},
+  "sessions": {
+    "s_258401ccdc78f2": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1ff6b-12e4-72a3-b54a-1d016e2c6a39",
+        "model": "gpt-6.1-terra"
+      },
+      "human_author": "Lalit Vatsal <lprakashv@gmail.com>"
+    },
+    "s_3784247ee2b58b": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1ffc4-6bec-75b0-817e-7a82811b8307",
+        "model": "gpt-6.1-terra"
+      },
+      "human_author": "Lalit Vatsal <lprakashv@gmail.com>"
+    },
+    "s_8e754f0cdc1ba2": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1ff5b-aec2-7751-86ea-4e9cc38061c7",
+        "model": "gpt-6.1-terra"
+      },
+      "human_author": "Lalit Vatsal <lprakashv@gmail.com>"
+    }
+  }
+}
