@@ -1,0 +1,31 @@
+app/src/main/java/dev/lprakashv/cleanwall/ForegroundTime.kt
+  s_5af91bf8f49a0d::t_1824626e5345bd 25,34,76
+README.md
+  s_acd60d6356ff79::t_a5d956fdb47bab 6,10
+app/src/main/java/dev/lprakashv/cleanwall/MainActivity.kt
+  s_5af91bf8f49a0d::t_1824626e5345bd 80-83
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6ddd221f078bdf7fb5f1e027955cc0779e868c94",
+  "prompts": {},
+  "sessions": {
+    "s_5af91bf8f49a0d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1ff49-8b78-7e10-8bcd-b051998c05b0",
+        "model": "gpt-6.1-terra"
+      },
+      "human_author": "Lalit Vatsal <lprakashv@gmail.com>"
+    },
+    "s_acd60d6356ff79": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1fe5d-a537-7c10-b32d-7393b45befa8",
+        "model": "gpt-6.1-terra"
+      },
+      "human_author": "Lalit Vatsal <lprakashv@gmail.com>"
+    }
+  }
+}
