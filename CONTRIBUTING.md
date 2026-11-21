@@ -4,7 +4,7 @@ Thank you for helping improve Clean Wall +Ultra. This guide covers the local wor
 
 ## Before you start
 
-Open an issue to discuss a large change. For a bug, include the TV model, Android version, steps to reproduce, and expected and actual results. Remove personal data from logs and screenshots.
+Use the GitHub issue templates to report a bug or suggest a feature. Open an issue to discuss a large change. For a bug, include the TV model, Android version, steps to reproduce, and expected and actual results. Remove personal data from logs and screenshots.
 
 Project code is available under the [MIT License](LICENSE). Third-party media and trademarks may have separate rights and terms; keep their credits and terms intact.
 
