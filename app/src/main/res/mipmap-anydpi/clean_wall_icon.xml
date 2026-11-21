@@ -1,0 +1,11 @@
+<!-- Android TV uses the color icon layers. -->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MonochromeLauncherIcon">
+    <background>
+        <shape android:shape="rectangle">
+            <solid android:color="#171F2C" />
+        </shape>
+    </background>
+    <foreground android:drawable="@drawable/clean_wall_mark" />
+</adaptive-icon>

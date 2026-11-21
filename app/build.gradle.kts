@@ -4,16 +4,23 @@ plugins {
 }
 
 android {
-    namespace = "dev.quirkdeck.launcher"
+    namespace = "dev.lprakashv.cleanwall"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "dev.quirkdeck.launcher"
+        applicationId = "dev.lprakashv.cleanwall"
         minSdk = 26
         targetSdk = 35
         versionCode = 7
         versionName = "1.6"
     }
+
+    buildTypes {
+        debug {
+            enableUnitTestCoverage = true
+        }
+    }
+    buildFeatures { aidl = true }
 }
 
 kotlin {
@@ -23,5 +30,7 @@ kotlin {
 }
 
 dependencies {
+    implementation("dev.rikka.shizuku:api:13.1.5")
+    implementation("dev.rikka.shizuku:provider:13.1.5")
     testImplementation("junit:junit:4.13.2")
 }

@@ -1,9 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.READ_TV_LISTINGS" />
     <uses-feature android:name="android.software.leanback" android:required="false" />
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
     <queries>
+        <package android:name="com.android.vending" />
         <intent>
             <action android:name="android.settings.USAGE_ACCESS_SETTINGS" />
         </intent>
@@ -12,7 +15,12 @@
             <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
         </intent>
     </queries>
-    <application android:banner="@drawable/banner" android:icon="@drawable/banner" android:label="@string/home_name" android:theme="@android:style/Theme.Material.NoActionBar" android:allowBackup="false">
+    <!-- The app and its dialogs use remote Back key events to cancel in-place actions. -->
+    <application android:banner="@mipmap/clean_wall_banner" android:icon="@mipmap/clean_wall_icon" android:label="@string/home_name" android:theme="@android:style/Theme.Material.NoActionBar" android:allowBackup="false" android:enableOnBackInvokedCallback="false">
+        <provider android:name="rikka.shizuku.ShizukuProvider"
+            android:authorities="${applicationId}.shizuku" android:multiprocess="false"
+            android:enabled="true" android:exported="true"
+            android:permission="android.permission.INTERACT_ACROSS_USERS_FULL" />
         <activity android:name=".MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,6 +30,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
     </application>
