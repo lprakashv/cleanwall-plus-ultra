@@ -7,11 +7,11 @@
   </tr>
 </table>
 
-All Might artwork from [Wallpaper Abyss](https://wall.alphacoders.com/big.php?i=809318). The source states that the image is free for private, personal use and asks users to contact the artist for other uses. Character and artwork rights belong to their respective owners.
+Clean Wall +Ultra is a remote-first launcher for Android TV and Google TV. It brings your apps, weather, viewing shortcuts, and app activity together on one home screen.
 
-Clean Wall +Ultra is a remote-first Android TV launcher. It puts apps, weather, and activity insights on one home screen, with a choice of wallpapers and widgets.
+TV home screens can be crowded and difficult to navigate. On older or slower TVs, getting to an app or useful setting can take too many steps. Clean Wall +Ultra aims to make those everyday tasks easier with clear rows, visible focus, and controls designed for a TV remote. It supports devices running Android 8.0 and later. Performance depends on the TV and the features in use.
 
-The logo combines three wall tiles and a plus sign. The TV banner uses “Plus Ultra” as a reference to *My Hero Academia*.
+You can organize apps, see a forecast, review activity, resume available titles, and customize widgets and wallpapers directly from the launcher. You can also reduce motion and adjust the glass tint to suit your TV.
 
 **Requirements:** Android TV with Android 8.0 (API 26) or later. Some features depend on device support, an internet connection, or Usage Access.
 
@@ -22,6 +22,7 @@ The logo combines three wall tiles and a plus sign. The TV banner uses “Plus U
 - 🌤️ See local weather and app activity, including a seven-day view.
 - 🖼️ Choose still or motion wallpapers, glass tint, and reduced motion.
 - 🧩 Add, move, configure, and remove Home widgets with the D-pad.
+- 🔧 See reported running apps and access force stop with optional Shizuku integration.
 
 [Install on your TV](#get-started) · [TV compatibility](#tv-compatibility) · [Demo and screenshots](#demo-and-screenshots) · [Controls](#controls) · [Continue watching](#continue-watching) · [Wallpaper](#wallpaper) · [Widgets](#widgets) · [Development](#development) · [Contributing](CONTRIBUTING.md)
 
@@ -133,9 +134,7 @@ The [Shizuku API](https://github.com/RikkaApps/Shizuku-API) uses the MIT license
 
 Open **Settings → Wallpaper** to select a source, set the update frequency, or select **Refresh wallpaper now**. The intervals are 30 minutes, 1 hour, 6 hours, 12 hours, daily, and weekly. Clean Wall +Ultra checks the schedule while Home is open and when it resumes. Bing publishes one image per day. The NASA, Wikimedia, and Motion collections rotate through their media. Clean Wall +Ultra shows the media credit on Home and keeps downloaded media on the TV. The Wikimedia media ships with the app and works offline.
 
-- **NASA Earth photos** uses stills from [NASA's Spinning Earth visualization](https://svs.gsfc.nasa.gov/5570/).
-- **Wikimedia landscapes** includes [Lake Mountain Landscape](https://commons.wikimedia.org/wiki/File:Lake_Mountain_Landscape.jpg) by Bonnie Moreland and [Mountain Lake Sunset](https://commons.wikimedia.org/wiki/File:Mountain_Lake_Sunset.jpg) by 420 Photography. Both are CC0 and are resized to 1920 pixels wide.
-- **Motion loops** includes the [NASA and NOAA DSCOVR Earth GIF](https://commons.wikimedia.org/wiki/File:Earth-EpicDay260-20150917.gif), the [NASA Moon Phases Loop](https://svs.gsfc.nasa.gov/4310/), and [Small waterfall](https://commons.wikimedia.org/wiki/File:Small_waterfall.webm) by [YouTube Editor](https://www.youtube.com/user/Editor) under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). Clean Wall +Ultra ships a silent 1080p MP4 version of Small waterfall. Videos loop without sound while Home is visible. Reduce motion shows a still frame. GIF playback requires Android 9 or later.
+Videos loop without sound while Home is visible. Reduce motion shows a still frame. GIF playback requires Android 9 or later. See [Art and media credits](#art-and-media-credits) for sources and licenses.
 
 ### Storage and cleanup
 
@@ -232,6 +231,18 @@ Set the same operation to `default` to revoke the grant.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the review and testing workflow. CI does not replace testing with a TV remote.
 
+## Art and media credits
+
+The logo combines three wall tiles and a plus sign. The TV banner uses “Plus Ultra” as a reference to *My Hero Academia*.
+
+The All Might artwork is linked from [Wallpaper Abyss](https://wall.alphacoders.com/big.php?i=809318). The source states that the image is free for private, personal use and asks users to contact the artist for other uses. Character and artwork rights belong to their respective owners.
+
+Wallpaper sources and credits:
+
+- **NASA Earth photos:** stills from [NASA's Spinning Earth visualization](https://svs.gsfc.nasa.gov/5570/).
+- **Wikimedia landscapes:** [Lake Mountain Landscape](https://commons.wikimedia.org/wiki/File:Lake_Mountain_Landscape.jpg) by Bonnie Moreland and [Mountain Lake Sunset](https://commons.wikimedia.org/wiki/File:Mountain_Lake_Sunset.jpg) by 420 Photography. Both are CC0 and are resized to 1920 pixels wide.
+- **Motion loops:** the [NASA and NOAA DSCOVR Earth GIF](https://commons.wikimedia.org/wiki/File:Earth-EpicDay260-20150917.gif), the [NASA Moon Phases Loop](https://svs.gsfc.nasa.gov/4310/), and [Small waterfall](https://commons.wikimedia.org/wiki/File:Small_waterfall.webm) by [YouTube Editor](https://www.youtube.com/user/Editor) under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). The app includes a silent 1080p MP4 version of Small waterfall.
+
 ## License
 
-Project code is available under the [MIT License](LICENSE). Third-party media and trademarks have their own rights and terms; see the wallpaper credits above.
+Project code is available under the [MIT License](LICENSE). Third-party media and trademarks have their own rights and terms.
