@@ -3,7 +3,7 @@
 <table>
   <tr>
     <td><img src="app/src/main/res/mipmap-xhdpi/clean_wall_banner.png" alt="Clean Wall Plus Ultra banner with a wall of tiles and a mint plus sign" width="480"></td>
-    <td><img src="docs/images/all-might-plus-ultra.jpg" alt="All Might artwork with the words Plus Ultra" width="300"></td>
+    <td><a href="https://wall.alphacoders.com/big.php?i=809318"><img src="https://images3.alphacoders.com/809/thumb-350-809318.webp" alt="All Might artwork with the words Plus Ultra" width="300"></a></td>
   </tr>
 </table>
 
