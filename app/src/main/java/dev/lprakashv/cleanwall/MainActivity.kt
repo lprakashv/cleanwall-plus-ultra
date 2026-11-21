@@ -77,8 +77,10 @@ class MainActivity : Activity() {
     private val activityTime by lazy { AndroidActivityTime(this) }
     private var runningPackages: Set<String>? = null
     private val runningApps by lazy { RunningApps(this) { packages ->
-        runningPackages = packages
-        updateRunningCards()
+        if (runningPackages != packages) {
+            runningPackages = packages
+            updateRunningCards()
+        }
     } }
     private var usageLoading = false
     private var usageLoaded = false

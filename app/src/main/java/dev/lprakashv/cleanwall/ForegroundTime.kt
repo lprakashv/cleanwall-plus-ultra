@@ -22,7 +22,7 @@ internal enum class TimeBlock(val label: Int, val icon: Int) {
 }
 
 internal class ForegroundTime(
-    private val firstDay: LocalDate,
+    firstDay: LocalDate,
     private val zone: ZoneId,
     private val includedApps: Set<String>
 ) {
@@ -31,6 +31,7 @@ internal class ForegroundTime(
     private var active: ActiveApp? = null
     private var interactive = true
     private var locked = false
+    private val firstDayStart = firstDay.atStartOfDay(zone).toInstant().toEpochMilli()
     private var since = firstDay.minusDays(1).atStartOfDay(zone).toInstant().toEpochMilli()
 
     fun resume(id: String, activity: String?, at: Long) {
@@ -72,7 +73,7 @@ internal class ForegroundTime(
         if (at <= since) return
         val id = active?.id
         if (interactive && !locked && id != null && id in includedApps) {
-            var start = maxOf(since, firstDay.atStartOfDay(zone).toInstant().toEpochMilli())
+            var start = maxOf(since, firstDayStart)
             while (start < at) {
                 val local = Instant.ofEpochMilli(start).atZone(zone)
                 val date = local.toLocalDate()

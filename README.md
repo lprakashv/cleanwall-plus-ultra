@@ -3,11 +3,11 @@
 <table>
   <tr>
     <td><img src="app/src/main/res/mipmap-xhdpi/clean_wall_banner.png" alt="Clean Wall Plus Ultra banner with a wall of tiles and a mint plus sign" width="480"></td>
-    <td><img src="docs/images/all-might-paperized.jpg" alt="Paper craft of All Might from My Hero Academia" width="300"></td>
+    <td><img src="docs/images/all-might-plus-ultra.jpg" alt="All Might artwork with the words Plus Ultra" width="300"></td>
   </tr>
 </table>
 
-All Might paper craft by [Paperized Crafts](https://www.paperizedcrafts.com/2022/04/my-hero-academia-all-might-papercraft.html), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Image shown at reduced size. Character rights belong to their respective owners.
+All Might artwork from [Wallpaper Abyss](https://wall.alphacoders.com/big.php?i=809318). The source states that the image is free for private, personal use and asks users to contact the artist for other uses. Character and artwork rights belong to their respective owners.
 
 Clean Wall +Ultra is a remote-first Android TV launcher. It puts apps, weather, and activity insights on one home screen, with a choice of wallpapers and widgets.
 
