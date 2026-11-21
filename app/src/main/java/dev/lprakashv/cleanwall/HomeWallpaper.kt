@@ -42,6 +42,7 @@ internal class HomeWallpaper(
 
     private val bing = BingWallpaper(File(context.filesDir, "bing-wallpaper"))
     private val catalog = PublicWallpapers(context)
+    private val online = OnlineWallpapers(context, prefs, catalog)
     private val worker = Executors.newSingleThreadExecutor()
     private var showing: WallpaperFrame? = null
     private var displayedSource: WallpaperSource? = null
@@ -58,6 +59,7 @@ internal class HomeWallpaper(
 
     var source: WallpaperSource
         get() = WallpaperSource.entries.firstOrNull { it.name == prefs.getString("wallpaper_source", null) }
+            ?: if (prefs.getString("wallpaper_source", null) in setOf("PIXABAY", "NASA_ONLINE", "NASA")) WallpaperSource.COMMONS_ONLINE else null
             ?: if (prefs.getBoolean("bing", true)) WallpaperSource.BING else WallpaperSource.GRADIENT
         private set(value) { prefs.edit().putString("wallpaper_source", value.name).apply() }
 
@@ -68,6 +70,29 @@ internal class HomeWallpaper(
             prefs.edit().putInt("wallpaper_minutes", value.minutes).apply()
             refresh()
         }
+
+    val onlineMotion get() = prefs.getBoolean("online_wallpaper_motion", false)
+    val onlineCategory get() = OnlineWallpapers.normalizeCategory(prefs.getString("online_wallpaper_category", null))
+    private fun onlineConfig() = OnlineConfig(onlineCategory, onlineMotion)
+
+    fun findOnlineCategories(query: String) = online.categories(query)
+
+    fun setOnlineMotion(value: Boolean) = updateOnline { putBoolean("online_wallpaper_motion", value) }
+    fun setOnlineCategory(value: String) = updateOnline { putString("online_wallpaper_category", value) }
+
+    private fun updateOnline(update: SharedPreferences.Editor.() -> Unit) {
+        prefs.edit().apply {
+            update()
+            remove("wallpaper_checked_COMMONS_ONLINE")
+            remove("wallpaper_index_COMMONS_ONLINE")
+        }.apply()
+        retryAt = 0
+        if (source.isOnline()) {
+            displayedSource = null
+            render()
+            refresh()
+        }
+    }
 
     fun layer(creditView: TextView) = FrameLayout(context).apply {
         stopVideo()
@@ -134,11 +159,13 @@ internal class HomeWallpaper(
             worker.execute {
                 synchronized(cacheLock) {
                     catalog.cleanCache()
+                    online.cleanCache()
                     bing.cleanCache()
                 }
             }
         }
         val selected = source
+        val onlineConfig = onlineConfig()
         if (selected == WallpaperSource.GRADIENT) {
             if (manual) toast(R.string.wallpaper_choose_source)
             return
@@ -166,10 +193,18 @@ internal class HomeWallpaper(
                         if (!hasFrame) offerCached(selected, cached?.let { WallpaperFrame(it.bitmap, it.credit) })
                         val photo = (if (due || cached == null) bing.fetch(cached?.date) else null) ?: cached
                         photo?.let { WallpaperFrame(it.bitmap, it.credit) } ?: throw IOException("No Bing wallpaper")
+                    } else if (selected.isOnline()) {
+                        val cached = if (hasFrame) null else online.cached(selected, onlineConfig)
+                        offerCached(selected, cached, onlineConfig)
+                        if (!due && cached != null) cached else {
+                            val loaded = online.load(selected, onlineConfig, currentIndex)
+                            nextIndex = loaded.second
+                            loaded.first
+                        }
                     } else {
                         val cached = if (hasFrame) null else catalog.cached(selected, currentIndex)
                         offerCached(selected, cached)
-                        nextIndex = if (due || currentIndex < 0) catalog.next(selected, currentIndex) else currentIndex
+                        nextIndex = if (due || !catalog.hasIndex(selected, currentIndex)) catalog.next(selected, currentIndex) else currentIndex
                         if (!due && cached != null) cached else catalog.load(selected, nextIndex)
                     }
                 }
@@ -177,7 +212,7 @@ internal class HomeWallpaper(
             context.runOnUiThread {
                 if (context.isDestroyed) return@runOnUiThread
                 inFlight = false
-                if (source != selected) {
+                if (source != selected || (selected.isOnline() && onlineConfig != onlineConfig())) {
                     if (visible) refresh()
                     return@runOnUiThread
                 }
@@ -199,10 +234,10 @@ internal class HomeWallpaper(
         }
     }
 
-    private fun offerCached(selected: WallpaperSource, frame: WallpaperFrame?) {
+    private fun offerCached(selected: WallpaperSource, frame: WallpaperFrame?, config: OnlineConfig? = null) {
         if (frame == null) return
         context.runOnUiThread {
-            if (!context.isDestroyed && source == selected) {
+            if (!context.isDestroyed && source == selected && (config == null || config == onlineConfig())) {
                 showing = frame
                 displayedSource = selected
                 render()
@@ -225,8 +260,8 @@ internal class HomeWallpaper(
             stopVideo()
             if (file != null) {
                 playingFile = file
-                video.visibility = View.VISIBLE
                 video.setVideoPath(file.path)
+                video.visibility = View.VISIBLE
                 video.start()
             }
         }

@@ -7,11 +7,7 @@
   </tr>
 </table>
 
-Clean Wall +Ultra is a remote-first launcher for Android TV and Google TV. It brings your apps, weather, viewing shortcuts, and app activity together on one home screen.
-
-TV home screens can be crowded and difficult to navigate. On older or slower TVs, getting to an app or useful setting can take too many steps. Clean Wall +Ultra aims to make those everyday tasks easier with clear rows, visible focus, and controls designed for a TV remote. It supports devices running Android 8.0 and later. Performance depends on the TV and the features in use.
-
-You can organize apps, see a forecast, review activity, resume available titles, and customize widgets and wallpapers directly from the launcher. You can also reduce motion and adjust the glass tint to suit your TV.
+Clean Wall +Ultra is a remote-first launcher for Android TV and Google TV. It brings apps, weather, viewing shortcuts, and app activity together on one home screen. Use the remote to organize apps and customize widgets, wallpapers, motion, and glass tint. Performance depends on the TV and the features in use.
 
 **Requirements:** Android TV with Android 8.0 (API 26) or later. Some features depend on device support, an internet connection, or Usage Access.
 
@@ -28,7 +24,7 @@ You can organize apps, see a forecast, review activity, resume available titles,
 
 ## Get started
 
-You need a TV or streaming device with Android TV or Google TV, Android 8.0 or later, and permission to install apps. You can install a prebuilt APK (the Android installer file) with your TV remote.
+You can install a prebuilt APK (the Android installer file) with your TV remote. Your device must allow app installation.
 
 1. **Get the APK.** On the project's GitHub page, open **Releases**, then download `clean-wall-plus-ultra.apk` under **Assets** when a release is available. If someone shared this project with you directly, ask them for the APK. Developers can [build an APK locally](#development) or [download a CI test build](#download-a-test-build).
 2. **Copy the APK to the TV.** Use either method.
@@ -101,10 +97,11 @@ Use Left and Right to browse a row and OK to open an app or widget action. Focus
 
 - **Watch** includes the streaming apps Clean Wall +Ultra recognizes. **Utilities** contains the other apps. Select the Google Play icon to install apps. The Settings gear opens the launcher menu.
 - Hold OK on a card to open its actions. Choose **Pick up to move**, use Left or Right, then press OK to drop or Back to cancel. You can move an app to another row, hide it, or select **Uninstall** to open Android's confirmation. **Settings → Hidden apps** lets you open, restore, or uninstall a hidden app.
-- A dot on an app card means Android reports a running process for that app. This includes cached processes that can be idle. The dot refreshes every 10 seconds while Home is open. Set up [Shizuku](#running-apps) to use this feature. Hold OK on a card with a dot and select **Force stop** to stop the app. Android can start it again when needed. Force stop can interrupt playback and discard unsaved work.
+- A dot on an app card means Android reports a running process, which can be idle. The dot refreshes every 10 seconds while Home is open. Set up [Shizuku](#running-apps) to use this feature. Hold OK on a card with a dot and select **Force stop** to stop the app. Android can start it again when needed. Force stop can interrupt playback and discard unsaved work.
 - To use Android's own controls, hold OK on a card, select **App info**, then select **Force stop** in Android settings if available.
 - Use Up and Down to move between the menu bar, widgets, Continue watching, Watch, and Utilities. Focus skips hidden and empty rows. Home remembers the last focused tile in each row.
-- Open **Settings** to manage widgets or change the wallpaper, glass tint, or motion. Glass tint applies to Home and all Clean Wall +Ultra dialogs and menus, including App activity. Settings opens from the side so Home stays visible.
+- On the Home screen, Back leaves the launcher open. When you open Clean Wall +Ultra from the Apps list, Back returns to the previous screen.
+- Open **Settings** to manage widgets or change the wallpaper, glass tint, or motion. Press Back in a submenu to return to its parent menu. Glass tint applies to Home and all Clean Wall +Ultra dialogs and menus, including App activity. Settings opens from the side so Home stays visible.
 - The status bar shows the logo, the local date and time, and an icon for the current time block. Weather refreshes every 15 minutes while Home is visible. Open-Meteo receives the city search or the selected city's coordinates.
 - The Weather card shows the current temperature, condition icon, today's high and low, and humidity on the left. A location pin marks the selected city. The forecast on the right shows the high and a condition icon for each upcoming day. Press OK and use Left or Right to see each day's condition, high and low, chance of rain or snow, and expected precipitation. The app omits zero or unavailable precipitation readings. Hold OK and choose **Configure widget** to change the city.
 - **Active time today** labels the busiest time block and shows its icon and duration. It compares the top two apps with their icons and bars. Each bar in the 7-day chart has a day initial below it. The local time blocks are Mornings (06:00–12:00), Daytime (12:00–18:00), Evenings (18:00–22:00), and Late nights (22:00–06:00).
@@ -132,13 +129,15 @@ The [Shizuku API](https://github.com/RikkaApps/Shizuku-API) uses the MIT license
 
 ## Wallpaper
 
-Open **Settings → Wallpaper** to select a source, set the update frequency, or select **Refresh wallpaper now**. The intervals are 30 minutes, 1 hour, 6 hours, 12 hours, daily, and weekly. Clean Wall +Ultra checks the schedule while Home is open and when it resumes. Bing publishes one image per day. The NASA, Wikimedia, and Motion collections rotate through their media. Clean Wall +Ultra shows the media credit on Home and keeps downloaded media on the TV. The Wikimedia media ships with the app and works offline.
+Open **Settings → Wallpaper** to select a source, set the update frequency, or select **Refresh wallpaper now**. The intervals are 30 minutes, 1 hour, 6 hours, 12 hours, daily, and weekly. Clean Wall +Ultra checks the schedule while Home is open and when it resumes. Bing publishes one image per day. The bundled Wikimedia and Motion collections work offline. The app shows media credits on Home.
 
-Videos loop without sound while Home is visible. Reduce motion shows a still frame. GIF playback requires Android 9 or later. See [Art and media credits](#art-and-media-credits) for sources and licenses.
+Select **Wikimedia online** to show **Media type** and **Category** in the same menu. Choose still photos or moving videos. To choose a category, enter a search term and select a result from Wikimedia. The default category is Landscapes. No account or API key is required. If an earlier version used NASA or Pixabay, the app selects Wikimedia online. Other saved source choices stay the same.
+
+Wikimedia stills come from community-featured pictures marked CC0. The app searches for featured CC0 videos first. If none fit the TV limits, it searches other CC0 videos in the selected category. Wikimedia does not provide a general Safe Search option. A category can have no suitable results. The app treats videos of 30 seconds or less as short. Videos are limited to 1080p; they loop without sound and may not loop seamlessly. Reduce motion shows a still frame. See [Wikimedia reuse guidance](https://commons.wikimedia.org/wiki/Commons:Reusing_content_outside_Wikimedia) and [Art and media credits](#art-and-media-credits).
 
 ### Storage and cleanup
 
-Clean Wall +Ultra keeps one Bing image and one copy of each item in the current wallpaper catalog for offline use. On startup and once a day while Home is open, the app checks its private wallpaper cache on a worker thread. It removes unfinished downloads and cache files for wallpaper entries that have been retired. It recovers the previous Bing cache file if a backup is available.
+Clean Wall +Ultra keeps one Bing image, the most recent online wallpaper, and copies of the current bundled wallpaper catalog for offline use. On startup and once a day while Home is open, the app checks its private wallpaper caches on a worker thread. It removes interrupted downloads and retired wallpaper entries, including retired NASA and Pixabay cache files. It keeps the current online wallpaper. It recovers the previous Bing cache file if a backup is available.
 
 Clean Wall +Ultra also removes unfinished copies left by the former layout import on startup. Previously saved layouts and their backups remain available for reference.
 
@@ -239,9 +238,9 @@ The All Might artwork is linked from [Wallpaper Abyss](https://wall.alphacoders.
 
 Wallpaper sources and credits:
 
-- **NASA Earth photos:** stills from [NASA's Spinning Earth visualization](https://svs.gsfc.nasa.gov/5570/).
+- **Wikimedia online:** CC0 files from [Wikimedia Commons](https://commons.wikimedia.org/). Credits appear on Home.
 - **Wikimedia landscapes:** [Lake Mountain Landscape](https://commons.wikimedia.org/wiki/File:Lake_Mountain_Landscape.jpg) by Bonnie Moreland and [Mountain Lake Sunset](https://commons.wikimedia.org/wiki/File:Mountain_Lake_Sunset.jpg) by 420 Photography. Both are CC0 and are resized to 1920 pixels wide.
-- **Motion loops:** the [NASA and NOAA DSCOVR Earth GIF](https://commons.wikimedia.org/wiki/File:Earth-EpicDay260-20150917.gif), the [NASA Moon Phases Loop](https://svs.gsfc.nasa.gov/4310/), and [Small waterfall](https://commons.wikimedia.org/wiki/File:Small_waterfall.webm) by [YouTube Editor](https://www.youtube.com/user/Editor) under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). The app includes a silent 1080p MP4 version of Small waterfall.
+- **Motion loop:** [Small waterfall](https://commons.wikimedia.org/wiki/File:Small_waterfall.webm) by [YouTube Editor](https://www.youtube.com/user/Editor) under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). The app includes a silent 1080p MP4 version of Small waterfall.
 
 ## License
 

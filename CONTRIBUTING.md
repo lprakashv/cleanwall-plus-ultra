@@ -6,12 +6,12 @@ Thank you for helping improve Clean Wall +Ultra. This guide covers the local wor
 
 Use the GitHub issue templates to report a bug or suggest a feature. Open an issue to discuss a large change. For a bug, include the TV model, Android version, steps to reproduce, and expected and actual results. Remove personal data from logs and screenshots.
 
-Project code is available under the [MIT License](LICENSE). Third-party media and trademarks may have separate rights and terms; keep their credits and terms intact.
+Keep third-party media credits and license terms intact. See the [license and media credits](README.md#art-and-media-credits).
 
 ## Make a change
 
 1. Clone the repository and create a branch for your change.
-2. Set up JDK 17, Gradle 9.9.2, Android SDK platform 35, and build tools 35.0.0 as described in the [README](README.md#development).
+2. Set up the tools in the [development guide](README.md#development).
 3. Keep changes focused. Add or update tests when behavior changes. Update the README when a user-facing feature or setup step changes.
 4. Run the checks below from the repository root:
 
@@ -23,7 +23,7 @@ Project code is available under the [MIT License](LICENSE). Third-party media an
    For Continue watching, check each view alone and both together with an app that shares Watch Next entries. Check artwork, progress bars, the app icons, and the shared source selection. Confirm that the source list matches Watch and the open list keeps Utilities in place. Check the Left, Right, and Down shortcuts to Utilities, permission denial, playback links, and D-pad navigation when either optional row is hidden.
 6. Open a pull request. Describe the problem, the change, and the checks you ran. Add screenshots or a silent recording for visible changes. Use sample data if you show activity or viewing history. Mention any known limits.
 
-The coverage report is in `app/build/reports/coverage/test/debug/index.html`. GitHub Actions runs the same build, lint, unit tests, and coverage tasks on pushes and pull requests. CI does not test on a TV or emulator.
+GitHub Actions runs the same checks on pushes and pull requests. CI does not test on a TV or emulator. See the [development guide](README.md#development) for the coverage report location.
 
 ## Check TV compatibility
 

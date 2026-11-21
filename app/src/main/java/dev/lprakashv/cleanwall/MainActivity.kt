@@ -97,6 +97,7 @@ class MainActivity : Activity() {
     private var lastWidget: View? = null
     private val appWorker = Executors.newSingleThreadExecutor()
     private val weatherWorker = Executors.newSingleThreadExecutor()
+    private val categoryWorker = Executors.newSingleThreadExecutor()
     private var apps = emptyList<App>()
     private var appSignature: List<String>? = null
     private var selectedApp: String? = null
@@ -213,11 +214,17 @@ class MainActivity : Activity() {
         super.onSaveInstanceState(outState)
     }
 
+    @Deprecated("Uses the platform Back callback on supported TV versions")
+    override fun onBackPressed() {
+        if (!isTaskRoot || intent?.hasCategory(Intent.CATEGORY_HOME) != true) super.onBackPressed()
+    }
+
     override fun onDestroy() {
         runningApps.close()
         continueArtwork.close()
         appWorker.shutdownNow()
         weatherWorker.shutdownNow()
+        categoryWorker.shutdownNow()
         wallpaper.close()
         widgetUpdates.close()
         super.onDestroy()
@@ -239,7 +246,24 @@ class MainActivity : Activity() {
 
     private fun vertical() = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
 
-    private fun homeSheet(title: String) = HomeSheet(this, title, homeTheme)
+    private var sheetParent: HomeSheet? = null
+    private var sheetReturnTo: (() -> Unit)? = null
+    private var sheetGeneration = 0
+
+    private fun withSheetParent(parent: HomeSheet?, action: () -> Unit) {
+        val previous = sheetParent
+        sheetParent = parent
+        try { action() } finally { sheetParent = previous }
+    }
+
+    private fun homeSheet(title: String, rebuild: ((Int) -> Unit)? = null): HomeSheet {
+        sheetGeneration++
+        val parent = sheetParent
+        val restore = rebuild?.let { action -> { focus: Int -> withSheetParent(parent) { action(focus) } } }
+        return HomeSheet(this, title, homeTheme, parent, sheetReturnTo.takeIf { parent == null }, restore) { sheet, action ->
+            withSheetParent(sheet, action)
+        }
+    }
 
     private fun createHome() {
         homeTheme = HomeTheme(this, prefs.getInt("glass", 132))
@@ -550,16 +574,17 @@ class MainActivity : Activity() {
         refreshWidgetRow(widgetOrder.getOrNull(minOf(index, widgetOrder.lastIndex)))
     }
 
-    private fun showWidgetManager() {
+    private fun showWidgetManager(focus: Int = 0) {
         val shown = widgetOrder
         val options = listOf(
             HomeSheet.Choice(getString(R.string.show_widgets_row), visibilitySetting(widgetsVisible)),
             HomeSheet.Choice(getString(R.string.add_widget))
         ) + shown.map { HomeSheet.Choice(widgetTitle(it)) }
-        homeSheet(getString(R.string.widgets_settings)).items(options) { index ->
+        homeSheet(getString(R.string.widgets_settings), ::showWidgetManager).items(options, focus = focus) { index ->
             if (index == 0) {
                 prefs.edit().putBoolean(WIDGETS_VISIBLE, !widgetsVisible).apply()
                 refreshWidgetRow(null)
+                withSheetParent(sheetParent?.parent) { showWidgetManager(index) }
             } else if (index == 1) showWidgetCatalog()
             else {
                 val id = shown[index - 2]
@@ -1108,8 +1133,12 @@ class MainActivity : Activity() {
         card.isActivated = true
         actionButtons.removeAllViews()
         actions.forEach { (title, action) ->
-            actionButtons.addView(control(title) { closeCardActions(restoreFocus = true); action() },
-                LinearLayout.LayoutParams(0, -1, 1f).apply { marginEnd = dp(8) })
+            actionButtons.addView(control(title) {
+                closeCardActions(restoreFocus = true)
+                val previous = sheetReturnTo
+                sheetReturnTo = { showCardActions(card, actions) }
+                try { action() } finally { sheetReturnTo = previous }
+            }, LinearLayout.LayoutParams(0, -1, 1f).apply { marginEnd = dp(8) })
         }
         appControls.visibility = View.INVISIBLE
         actionButtons.visibility = View.VISIBLE
@@ -1424,7 +1453,7 @@ class MainActivity : Activity() {
         }
     }
 
-    private fun showSettings() {
+    private fun showSettings(focus: Int = 0) {
         val hiddenCount = orderedApps().count { it.id in hiddenIds() }
         val options = listOf(
             HomeSheet.Choice(getString(R.string.hidden_apps), hiddenCount.toString()),
@@ -1440,7 +1469,7 @@ class MainActivity : Activity() {
             )),
             HomeSheet.Choice(getString(R.string.android_settings))
         )
-        homeSheet(getString(R.string.settings)).items(options) { choice ->
+        homeSheet(getString(R.string.settings), ::showSettings).items(options, focus = focus) { choice ->
             when (choice) {
                 0 -> showHiddenApps()
                 1 -> showWallpaperSettings()
@@ -1460,7 +1489,7 @@ class MainActivity : Activity() {
 
     private fun visibilitySetting(visible: Boolean) = getString(if (visible) R.string.widget_on else R.string.widget_off)
 
-    private fun showContinueSettings() {
+    private fun showContinueSettings(focus: Int = 0) {
         val options = buildList {
             add(HomeSheet.Choice(getString(R.string.show_continue_watching), visibilitySetting(continueVisible)))
             add(HomeSheet.Choice(getString(R.string.continue_home_row), visibilitySetting(continueRow)))
@@ -1470,22 +1499,25 @@ class MainActivity : Activity() {
             )))
             if (continueVisible && !hasTvListingsAccess()) add(HomeSheet.Choice(getString(R.string.tv_listings_access)))
         }
-        homeSheet(getString(R.string.continue_watching)).items(options) { index ->
+        homeSheet(getString(R.string.continue_watching), ::showContinueSettings).items(options, focus = focus) { index ->
             when (index) {
                 0 -> {
                     prefs.edit().putBoolean(CONTINUE_VISIBLE, !continueVisible).apply()
                     showContinueWatching()
                     refreshContinueWatching()
                     if (continueVisible && !hasTvListingsAccess()) requestTvListingsAccess()
+                    withSheetParent(sheetParent?.parent) { showContinueSettings(index) }
                 }
                 1 -> {
                     prefs.edit().putBoolean(CONTINUE_ROW, !continueRow).apply()
                     showContinueWatching()
+                    withSheetParent(sheetParent?.parent) { showContinueSettings(index) }
                 }
                 2 -> {
                     val row = continueRow
                     prefs.edit().putBoolean(CONTINUE_ROW, row).putBoolean(CONTINUE_BY_APP, !continueByApp).apply()
                     showContinueWatching()
+                    withSheetParent(sheetParent?.parent) { showContinueSettings(index) }
                 }
                 3 -> showContinueSources()
                 4 -> showTvListingsAccess()
@@ -1502,10 +1534,6 @@ class MainActivity : Activity() {
                 prefs.edit().remove(CONTINUE_SOURCES).apply()
                 showContinueWatching()
                 return@choices
-            }
-            if (sources == null) {
-                prefs.edit().putStringSet(CONTINUE_SOURCES, emptySet()).apply()
-                showContinueWatching()
             }
             val candidates = watchSources()
             val sheet = homeSheet(choices[1])
@@ -1550,23 +1578,66 @@ class MainActivity : Activity() {
         }
     }
 
-    private fun showWallpaperSettings() {
-        val options = listOf(
-            HomeSheet.Choice(getString(R.string.wallpaper_source), getString(wallpaper.source.label)),
-            HomeSheet.Choice(getString(R.string.wallpaper_frequency), getString(wallpaper.interval.label)),
-            HomeSheet.Choice(getString(R.string.wallpaper_refresh))
-        )
-        homeSheet(getString(R.string.background_setting)).items(options) { choice ->
-            when (choice) {
-                0 -> homeSheet(getString(R.string.wallpaper_source))
-                    .choices(WallpaperSource.entries.map { getString(it.label) }, wallpaper.source.ordinal) {
-                        wallpaper.select(WallpaperSource.entries[it])
+    private fun showWallpaperSettings(focus: Int = 0) {
+        val options = mutableListOf<Pair<HomeSheet.Choice, () -> Unit>>()
+        options += HomeSheet.Choice(getString(R.string.wallpaper_source), getString(wallpaper.source.label)) to {
+            homeSheet(getString(R.string.wallpaper_source))
+                .choices(WallpaperSource.entries.map { getString(it.label) }, wallpaper.source.ordinal) {
+                    val parent = sheetParent?.parent?.parent
+                    wallpaper.select(WallpaperSource.entries[it])
+                    withSheetParent(parent) { showWallpaperSettings() }
+                }
+        }
+        if (wallpaper.source == WallpaperSource.COMMONS_ONLINE) {
+            val types = listOf(getString(R.string.online_wallpaper_static), getString(R.string.online_wallpaper_motion))
+            options += HomeSheet.Choice(getString(R.string.online_wallpaper_type), types[if (wallpaper.onlineMotion) 1 else 0]) to {
+                homeSheet(getString(R.string.online_wallpaper_type)).choices(types, if (wallpaper.onlineMotion) 1 else 0) {
+                    val parent = sheetParent?.parent?.parent
+                    wallpaper.setOnlineMotion(it == 1)
+                    withSheetParent(parent) { showWallpaperSettings(1) }
+                }
+            }
+            options += HomeSheet.Choice(getString(R.string.online_wallpaper_category), wallpaper.onlineCategory) to {
+                homeSheet(getString(R.string.online_wallpaper_category)).input(
+                    getString(R.string.wallpaper_category_hint), getString(R.string.wallpaper_find_categories), ::findWallpaperCategories
+                )
+            }
+        }
+        options += HomeSheet.Choice(getString(R.string.wallpaper_frequency), getString(wallpaper.interval.label)) to {
+            homeSheet(getString(R.string.wallpaper_frequency))
+                .choices(WallpaperInterval.entries.map { getString(it.label) }, wallpaper.interval.ordinal) {
+                    val parent = sheetParent?.parent?.parent
+                    wallpaper.interval = WallpaperInterval.entries[it]
+                    withSheetParent(parent) { showWallpaperSettings(if (wallpaper.source.isOnline()) 3 else 1) }
+                }
+        }
+        options += HomeSheet.Choice(getString(R.string.wallpaper_refresh)) to {
+            wallpaper.refresh(manual = true)
+            withSheetParent(sheetParent?.parent) { showWallpaperSettings(options.lastIndex) }
+        }
+        homeSheet(getString(R.string.background_setting), ::showWallpaperSettings).items(options.map { it.first }, focus = focus) { options[it].second() }
+    }
+
+    private fun findWallpaperCategories(query: String) {
+        val parent = sheetParent
+        val generation = sheetGeneration
+        Toast.makeText(this, R.string.wallpaper_categories_loading, Toast.LENGTH_SHORT).show()
+        categoryWorker.execute {
+            val categories = runCatching { wallpaper.findOnlineCategories(query) }.getOrNull()
+            runOnUiThread {
+                if (isDestroyed || isFinishing || !homeVisible || generation != sheetGeneration) return@runOnUiThread
+                withSheetParent(parent) {
+                    val sheet = homeSheet(getString(R.string.online_wallpaper_category))
+                    if (categories.isNullOrEmpty()) {
+                        sheet.message(getString(if (categories == null) R.string.wallpaper_categories_unavailable else R.string.wallpaper_categories_empty))
+                    } else {
+                        sheet.choices(categories, categories.indexOf(wallpaper.onlineCategory)) { index ->
+                            val menuParent = sheetParent?.parent?.parent?.parent
+                            wallpaper.setOnlineCategory(categories[index])
+                            withSheetParent(menuParent) { showWallpaperSettings(2) }
+                        }
                     }
-                1 -> homeSheet(getString(R.string.wallpaper_frequency))
-                    .choices(WallpaperInterval.entries.map { getString(it.label) }, wallpaper.interval.ordinal) {
-                        wallpaper.interval = WallpaperInterval.entries[it]
-                    }
-                2 -> wallpaper.refresh(manual = true)
+                }
             }
         }
     }
@@ -1640,15 +1711,21 @@ class MainActivity : Activity() {
     }
 
     private fun searchCities(query: String) {
+        val parent = sheetParent
+        val generation = sheetGeneration
         weatherWorker.execute {
             val matches = runCatching { Weather.find(query) }.getOrNull()
             runOnUiThread {
-                if (isDestroyed || isFinishing) return@runOnUiThread
+                if (isDestroyed || isFinishing || !homeVisible || generation != sheetGeneration) return@runOnUiThread
                 if (matches.isNullOrEmpty()) {
-                    Toast.makeText(this, if (matches == null) R.string.weather_unavailable else R.string.no_cities, Toast.LENGTH_SHORT).show()
+                    withSheetParent(parent) {
+                        homeSheet(getString(R.string.weather_city)).message(
+                            getString(if (matches == null) R.string.weather_unavailable else R.string.no_cities)
+                        )
+                    }
                     return@runOnUiThread
                 }
-                homeSheet(getString(R.string.weather_city))
+                withSheetParent(parent) { homeSheet(getString(R.string.weather_city))
                     .choices(matches.map { it.name }) { index ->
                         city = matches[index]
                         prefs.edit().putString("city", city.name)
@@ -1660,7 +1737,7 @@ class MainActivity : Activity() {
                         weatherStale = false
                         showConditions()
                         refreshWeather(force = true)
-                    }
+                    } }
             }
         }
     }

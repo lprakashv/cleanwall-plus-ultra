@@ -16,9 +16,9 @@ import java.net.URL
 
 internal enum class WallpaperSource(val label: Int) {
     BING(R.string.bing_daily),
-    NASA(R.string.nasa_wallpaper),
     COMMONS(R.string.commons_wallpaper),
     LOOPS(R.string.loop_wallpaper),
+    COMMONS_ONLINE(R.string.commons_online_wallpaper),
     GRADIENT(R.string.dark_background)
 }
 
@@ -30,23 +30,15 @@ internal data class WallpaperFrame(
 )
 
 internal class PublicWallpapers(private val context: Context) {
-    private data class Asset(val location: String, val credit: String)
+    private data class Asset(val name: String, val credit: String)
     private val directory = File(context.filesDir, "public-wallpapers")
-    private val nasa = "https://svs.gsfc.nasa.gov/vis/a000000/a005500/a005570/"
 
     private val collections = mapOf(
-        WallpaperSource.NASA to listOf(
-            Asset(nasa + "Earth_wAtmos_spin_02.01000.preview.jpg", "Earth · NASA Scientific Visualization Studio · Kel Elkins"),
-            Asset(nasa + "Earth_wAtmos_spin_02.04000.still_preview.jpg", "Earth at night · NASA Scientific Visualization Studio · Kel Elkins")
-        ),
         WallpaperSource.COMMONS to listOf(
             Asset("lake-mountain.jpg", "Lake Mountain Landscape · Bonnie Moreland · CC0"),
             Asset("mountain-sunset.jpg", "Mountain Lake Sunset · 420 Photography · CC0")
         ),
         WallpaperSource.LOOPS to listOf(
-            Asset("earth-dscovr.gif", "Earth from DSCOVR · NASA / NOAA"),
-            Asset("https://svs.gsfc.nasa.gov/vis/a000000/a004300/a004310/moon_1080p30.mp4",
-                "Moon Phases Loop · NASA Scientific Visualization Studio · Ernie Wright"),
             Asset("small-waterfall.mp4", "Small waterfall · YouTube Editor · CC BY 3.0")
         )
     )
@@ -58,7 +50,9 @@ internal class PublicWallpapers(private val context: Context) {
         pruneCache(directory, current)
     }
 
-    fun next(source: WallpaperSource, current: Int): Int = (current + 1) % collections.getValue(source).size
+    fun hasIndex(source: WallpaperSource, index: Int) = index in collections.getValue(source).indices
+
+    fun next(source: WallpaperSource, current: Int): Int = nextIndex(current, collections.getValue(source).size)
 
     fun cached(source: WallpaperSource, index: Int): WallpaperFrame? {
         val asset = collections.getValue(source).getOrNull(index) ?: return null
@@ -73,12 +67,8 @@ internal class PublicWallpapers(private val context: Context) {
         directory.mkdirs()
         val temporary = File.createTempFile("wallpaper-", ".${target.extension}", directory)
         try {
-            if (asset.location.startsWith("https://")) {
-                download(asset.location, temporary)
-            } else {
-                context.assets.open("wallpapers/${asset.location}").use { input ->
-                    temporary.outputStream().use { input.copyTo(it) }
-                }
+            context.assets.open("wallpapers/${asset.name}").use { input ->
+                temporary.outputStream().use { input.copyTo(it) }
             }
             val frame = decode(temporary, asset.credit)
             if (!temporary.renameTo(target)) throw IOException("Could not save the wallpaper")
@@ -89,14 +79,14 @@ internal class PublicWallpapers(private val context: Context) {
     }
 
     private fun cacheFile(source: WallpaperSource, index: Int, asset: Asset) =
-        File(directory, "${source.name.lowercase()}-$index.${asset.location.substringAfterLast('.')}")
+        File(directory, "${source.name.lowercase()}-$index.${asset.name.substringAfterLast('.')}")
 
-    private fun download(url: String, file: File) {
+    fun download(url: String, file: File) {
         val connection = URL(url).openConnection() as HttpURLConnection
         connection.connectTimeout = 8_000
         connection.readTimeout = 12_000
         connection.instanceFollowRedirects = false
-        connection.setRequestProperty("User-Agent", "CleanWallPlusUltra/1.6 (Android TV wallpaper)")
+        connection.setRequestProperty("User-Agent", "CleanWallPlusUltra/1.6 (https://github.com/lprakashv/cleanwall-plus-ultra)")
         val limit = if (file.extension in setOf("mp4", "webm")) 48L * 1024 * 1024 else 12L * 1024 * 1024
         val deadline = SystemClock.elapsedRealtime() + 90_000
         try {
@@ -123,7 +113,7 @@ internal class PublicWallpapers(private val context: Context) {
         }
     }
 
-    private fun decode(file: File, credit: String): WallpaperFrame {
+    fun decode(file: File, credit: String): WallpaperFrame {
         if (file.extension in setOf("mp4", "webm")) {
             val reader = MediaMetadataRetriever()
             try {
@@ -131,7 +121,7 @@ internal class PublicWallpapers(private val context: Context) {
                 val width = reader.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)?.toIntOrNull() ?: 0
                 val height = reader.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)?.toIntOrNull() ?: 0
                 val duration = reader.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLongOrNull() ?: 0L
-                require(width in 1..1920 && height in 1..1080 && duration in 1..60_000)
+                require(width in 1..1920 && height in 1..1080 && shortVideo(duration))
                 val poster = reader.getFrameAtTime(0) ?: throw IOException("Cannot read video poster")
                 return WallpaperFrame(poster, credit, video = file)
             } finally {
@@ -157,6 +147,10 @@ internal class PublicWallpapers(private val context: Context) {
 
     companion object {
         private val cacheName = Regex("""(?:wallpaper|nasa|commons|loops)-[0-9]+\.[a-z0-9]+""")
+
+        fun shortVideo(duration: Long) = duration in 1..30_000
+
+        fun nextIndex(current: Int, size: Int) = if (current !in 0 until size) 0 else (current + 1) % size
 
         fun pruneCache(directory: File, current: Set<String>) {
             directory.listFiles()?.forEach { file ->

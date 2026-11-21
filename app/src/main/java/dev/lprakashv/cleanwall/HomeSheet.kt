@@ -19,7 +19,15 @@ import android.widget.ScrollView
 import android.widget.TextView
 import kotlin.math.roundToInt
 
-internal class HomeSheet(private val context: Context, title: String, private val theme: HomeTheme) {
+internal class HomeSheet(
+    private val context: Context,
+    title: String,
+    private val theme: HomeTheme,
+    val parent: HomeSheet? = null,
+    private val returnTo: (() -> Unit)? = null,
+    private val rebuild: ((Int) -> Unit)? = null,
+    private val navigate: (HomeSheet, () -> Unit) -> Unit = { _, action -> action() }
+) {
     data class Choice(val title: String, val detail: String? = null, val icon: Drawable? = null)
 
     private val dialog = Dialog(context)
@@ -27,6 +35,7 @@ internal class HomeSheet(private val context: Context, title: String, private va
     private val ink = HomeTheme.INK
     private val muted = HomeTheme.MUTED
     private val accent = HomeTheme.ACCENT
+    private var focusedIndex = 0
 
     init {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -39,12 +48,12 @@ internal class HomeSheet(private val context: Context, title: String, private va
             maxLines = 1
             ellipsize = TextUtils.TruncateAt.END
         }, LinearLayout.LayoutParams(0, -2, 1f))
-        heading.addView(text("×", 26).apply {
-            contentDescription = context.getString(R.string.close_usage)
+        heading.addView(text(if (parent == null && returnTo == null) "×" else "‹", 26).apply {
+            contentDescription = context.getString(if (parent == null && returnTo == null) R.string.close_usage else R.string.back_to_previous_menu)
             gravity = Gravity.CENTER
             isFocusableInTouchMode = true
             background = theme.control(Color.TRANSPARENT)
-            setOnClickListener { dialog.dismiss() }
+            setOnClickListener { dialog.cancel() }
         }, LinearLayout.LayoutParams(dp(38), dp(38)).apply { marginStart = dp(8) })
         root.addView(heading)
         root.addView(ScrollView(context).apply {
@@ -52,6 +61,7 @@ internal class HomeSheet(private val context: Context, title: String, private va
             isFocusable = false
             addView(body)
         }, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(15) })
+        dialog.setOnCancelListener { if (parent != null) parent.restore() else returnTo?.invoke() }
         dialog.setContentView(root)
         dialog.window?.apply {
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -62,19 +72,21 @@ internal class HomeSheet(private val context: Context, title: String, private va
     }
 
     fun choices(options: List<String>, selected: Int = -1, choose: (Int) -> Unit) {
-        items(options.map { Choice(it) }, selected, choose)
+        items(options.map { Choice(it) }, selected, choose = choose)
     }
 
-    fun items(options: List<Choice>, selected: Int = -1, choose: (Int) -> Unit) {
+    fun items(options: List<Choice>, selected: Int = -1, focus: Int = selected.coerceAtLeast(0), choose: (Int) -> Unit) {
         options.forEachIndexed { index, option ->
             val row = actionRow(option, selected == index) {
+                focusedIndex = index
                 dialog.dismiss()
-                choose(index)
+                navigate(this, { choose(index) })
             }
             body.addView(row, LinearLayout.LayoutParams(-1, dp(43)).apply { bottomMargin = dp(3) })
         }
         show()
-        body.getChildAt(selected.coerceAtLeast(0))?.requestFocus()
+        focusedIndex = focus.coerceIn(0, (options.size - 1).coerceAtLeast(0))
+        body.getChildAt(focusedIndex)?.requestFocus()
     }
 
     fun message(message: String) {
@@ -124,7 +136,7 @@ internal class HomeSheet(private val context: Context, title: String, private va
             val value = field.text.toString().trim().take(100)
             if (value.isBlank()) return
             dialog.dismiss()
-            submit(value)
+            navigate(this, { submit(value) })
         }
         field.setOnEditorActionListener { _, action, _ ->
             if (action != EditorInfo.IME_ACTION_SEARCH) return@setOnEditorActionListener false
@@ -142,8 +154,13 @@ internal class HomeSheet(private val context: Context, title: String, private va
         field.requestFocus()
     }
 
+    private fun restore() {
+        if (rebuild != null) rebuild.invoke(focusedIndex) else show()
+    }
+
     private fun show() {
         dialog.show()
+        body.getChildAt(focusedIndex)?.requestFocus()
         val width = (context.resources.configuration.screenWidthDp - 80).coerceIn(1, 425)
         dialog.window?.setLayout(dp(width), -2)
     }
