@@ -1,0 +1,29 @@
+README.md
+  s_acd60d6356ff79::t_937e200dc84556 3-10
+.github/ISSUE_TEMPLATE/feature_request.yml
+  s_acd60d6356ff79::t_c4f360f1074f93 1-15
+.github/ISSUE_TEMPLATE/bug_report.yml
+  s_acd60d6356ff79::t_c4f360f1074f93 1-21
+.github/workflows/android.yml
+  s_acd60d6356ff79::t_c4f360f1074f93 21-22
+CONTRIBUTING.md
+  s_acd60d6356ff79::t_c4f360f1074f93 7
+.github/pull_request_template.md
+  s_acd60d6356ff79::t_c4f360f1074f93 1-11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "149cd343ac38a6c4ddb2d2fb0bf26b244faa08f4",
+  "prompts": {},
+  "sessions": {
+    "s_acd60d6356ff79": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1fe5d-a537-7c10-b32d-7393b45befa8",
+        "model": "gpt-6.1-terra"
+      },
+      "human_author": "Lalit Vatsal <lprakashv@gmail.com>"
+    }
+  }
+}
