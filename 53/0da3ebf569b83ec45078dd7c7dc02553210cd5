@@ -1,0 +1,19 @@
+README.md
+  s_acd60d6356ff79::t_afccab32270aca 6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "530da3ebf569b83ec45078dd7c7dc02553210cd5",
+  "prompts": {},
+  "sessions": {
+    "s_acd60d6356ff79": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1fe5d-a537-7c10-b32d-7393b45befa8",
+        "model": "gpt-6.1-terra"
+      },
+      "human_author": "Lalit Vatsal <lprakashv@gmail.com>"
+    }
+  }
+}
